@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>Sheet Printer</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- fontawesome icon cdn -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.css">
+  	<link rel="stylesheet" href="sheets.css">
+  	<script type="text/javascript" src="sheets.js"></script>
+  	<script type="text/javascript" src="JsBarcode.code128.min.js"></script>
+  </head>
+  <body>
+  	
+  	<div id="header" style="height:100px;"></div>
+
+  <!--   <div id="header1" class="float-container">
+      <button type="button" id="btn_tx" class="btn btn-primary btn-lg">Texas</button>
+    </div>
+ -->
+
+    <div>
+    	<h3 id="preview"><font color="#e0474c">Texas</font> Print Preview:</h3>
+      <table id="printTable">
+        <tr>
+          <th id="barcode" colspan="2" HEIGHT=40><svg id="code128"></svg></th>
+        </tr>
+        <tr HEIGHT=40>
+          <td >Item:</td>
+          <td id="item"></td>
+        </tr>
+        <tr HEIGHT=40>
+          <td>Qty:</td>
+          <td id="qty"></td>
+        </tr>
+        <tr HEIGHT=40>
+          <td>Weight:</td>
+          <td id="weight"></td>
+        </tr>
+        <tr HEIGHT=40>
+          <td>Tare:</td>
+          <td id="tare"></td>
+        </tr>
+        <tr HEIGHT=40>
+          <td>InDate:</td>
+          <td id="inDate"></td>
+        </tr>
+        <tr HEIGHT=40>
+          <td>Status:</td>
+          <td id="status"></td>
+        </tr>
+        <tr>
+          <td id="notes" colspan="2" HEIGHT=120>Notes:</td>
+        </tr>
+      </table>
+    </div>
+
+    <div id="footer">
+      <div class="footer-child">
+        <button class="btn btn-outline-success" onclick="printData()" id="button">Print me</button>
+      </div>
+      <div class="footer-child">
+        <button class="btn btn-success"  onclick="searchItemsTX()">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+    </div>
+
+  </body>
+
+  <script>
+    window.onload = function() {
+      var spreadsheet_id_tx = '1oOimwf3PAe_S1pe7O0nFsMi2qx2400F5ovp9AUR9skg';
+      var tab_name = 'In';
+      var url_tx = "https://opensheet.elk.sh/" + spreadsheet_id_tx + "/" + tab_name;
+      var sheetDataTX = "";
+
+      fetch(url_tx)
+      .then(response => response.text())
+      .then(data => sheetDataTX = data)
+      .catch(error => {  console.log(error); });
+
+      console.log(sheetDataTX);
+      
+      json = JSON.parse(sheetDataTX);
+      console.log(json[json.length-1])
+      var key = json.length - 1;
+      JsBarcode("#code128", json[key]["Id"]);
+      document.getElementById('item').innerHTML = json[key]["Item"];
+      document.getElementById('qty').innerHTML = json[key]["Qty"];
+      document.getElementById('weight').innerHTML = json[key]["Weight"];
+      document.getElementById('tare').innerHTML = json[key]["Tare"];
+      document.getElementById('inDate').innerHTML = json[key]["InDate"];
+      document.getElementById('status').innerHTML = json[key]["Status"];
+      document.getElementById('notes').innerHTML = "Notes: " + json[key]["Notes"];
+    };
+
+    function printData()
+    {
+        document.getElementById("header").style.display = "none";
+        document.getElementById("preview").style.display = "none";
+        document.getElementById("footer").style.display = "none";
+        window.print();
+        window.location.replace("https://rcgreenlabel.github.io/rcgreenlabelTX/");
+    }
+
+  </script>
+
+</html>
